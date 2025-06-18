@@ -1,87 +1,98 @@
 # 🧙‍♀️ Morgana’s Trial – Round Table 2.0
 
-This solution was developed for **Morgana’s Trial**, a .NET challenge focused on integrating **Umbraco CMS 15** with a secure, scalable **.NET Web API**. The goal was to expose selected Umbraco Management API features to external clients via a custom API layer.
+Esta solución fue desarrollada para **Morgana’s Trial**, un reto en .NET centrado en integrar **Umbraco CMS 15** con una **Web API .NET** segura y escalable. El objetivo fue exponer ciertas funcionalidades del Management API de Umbraco a clientes externos mediante una capa de API personalizada.
 
 ---
 
-## 🧱 Solution Structure
-
+## 🧱 Estructura de la Solución
+0
 ### 1. `UmbracoCMS` (Umbraco 15 CMS)
-- **Framework:** .NET 9
-- **CMS:** Umbraco 15
-- **Database:** SQLite (included in the solution)
-- **Purpose:** Hosts the CMS and Management API endpoints.
+
+- **Framework:** .NET 9  
+- **CMS:** Umbraco 15  
+- **Base de Datos:** SQLite (incluida en la solución)  
+- **Propósito:** Alojar el CMS y los endpoints del Management API.
 
 ### 2. `UmbracoBridge` (.NET Web API)
-- **Framework:** .NET 9
-- **Purpose:** Exposes endpoints to interact with Umbraco’s Management API securely via client credentials.
-- **Features:**
-  - Validated endpoints.
-  - Token-based authentication with caching.
-  - OpenAPI / Swagger documentation.
-  - Clean architecture: services, commands, queries, validators, contracts.
-  - Unit testing using `xUnit` and `Moq`.
+
+- **Framework:** .NET 9  
+- **Propósito:** Exponer endpoints para interactuar con el Management API de Umbraco de forma segura mediante client credentials.  
+- **Características:**
+  - Endpoints validados.
+  - Autenticación basada en token con caché.
+  - Documentación OpenAPI / Swagger.
+  - Arquitectura limpia: servicios, comandos, queries, validadores, contratos.
+  - Tests unitarios con `xUnit` y `Moq`.
 
 ---
 
-## 🌐 Exposed Endpoints
+## 🌐 Endpoints Expuestos
 
-| Method | Route                               | Description                                      |
-|--------|--------------------------------------|--------------------------------------------------|
-| GET    | `/api/management/healthcheck`       | Gets Umbraco health status                      |
-| POST   | `/api/management/documenttype`      | Creates a new Document Type in Umbraco         |
-| DELETE | `/api/management/delete/{id}`       | Deletes a Document Type by ID                  |
+| Método | Ruta                                | Descripción                                      |
+|--------|-------------------------------------|--------------------------------------------------|
+| GET    | `/api/management/healthcheck`       | Obtiene el estado de salud de Umbraco           |
+| POST   | `/api/management/documenttype`      | Crea un nuevo Document Type en Umbraco          |
+| DELETE | `/api/management/delete/{id}`       | Elimina un Document Type por ID                 |
 
-### ✅ Validation Rules for POST `/documenttype`:
-- `alias`, `name`, and `description` must **not be empty**.
-- `icon` must **start with `icon-`**.
+### ✅ Reglas de Validación para POST `/documenttype`:
+
+- `alias`, `name` y `description` **no deben estar vacíos**.
+- `icon` debe **comenzar con `icon-`**.
 
 ---
 
-## 🧪 Unit Tests
+## 🧪 Tests Unitarios
 
-Unit tests using `xUnit` and `Moq` cover:
-- `ManagementController`: success and failure scenarios.
-- `TokenService`: token acquisition and error handling.
-- `HealthCheckService`: Umbraco connectivity errors.
-- `DocumentTypeValidator`: for all rule cases (valid, missing fields, wrong icon format, etc.)
+Los tests unitarios con `xUnit` y `Moq` cubren:
 
-Run tests with:
+- `ManagementController`: escenarios exitosos y fallidos.
+- `TokenService`: adquisición de token y manejo de errores.
+- `HealthCheckService`: errores de conectividad con Umbraco.
+- `DocumentTypeValidator`: todos los casos (válido, campos faltantes, formato incorrecto del icono, etc.)
 
+Para correr los tests:
 
+```bash
 dotnet test
-⚙️ Setup Instructions
-Prerequisites:
-.NET 9 SDK
 
-Git
 
-Visual Studio 2022+ or Rider
+# ⚙️ Instrucciones de Configuración
 
-🔧 Local Setup
-Clone the repo:
+## Prerrequisitos
 
- 
+- .NET 9 SDK
+- Git
+- Visual Studio 2022+ o Rider
+
+## 🔧 Setup Local
+
+Clonar el repositorio:
+
+```bash
 git clone https://github.com/Viclop3z/morgana-trial.git
 cd morgana-trial
-Restore & build:
- 
+
+
 dotnet restore
 dotnet build
-Run both apps:
 
- 
+
 dotnet run --project UmbracoCMS
 dotnet run --project UmbracoBridge
-Access Swagger docs:
 
-Umbraco: https://localhost:{PORT}/umbraco/swagger/index.html
 
-Bridge API: https://localhost:{PORT}/swagger/index.html
+## Documentación Swagger
 
-📬 Example Requests
-✅ POST /api/management/documenttype
-json
+- **Umbraco:** https://localhost:{PORT}/umbraco/swagger/index.html
+- **Bridge API:** https://localhost:{PORT}/swagger/index.html
+
+## Ejemplos de Peticiones
+
+### ✅ POST `/api/management/documenttype`
+
+**Request:**
+
+```json
 {
   "alias": "customAlias",
   "name": "My Document",
@@ -93,23 +104,29 @@ json
   "collection": null,
   "isElement": true
 }
-Response:
 
-json
+**Response:**
+
+```json
 {
   "id": "6bfba926-609f-44b6-89ea-97fe4f89baf9"
 }
-❌ Invalid POST Example
-json
+
+### ❌ POST Inválido
+
+**Request:**
+
+```json
 {
   "alias": "",
   "name": "",
   "description": "",
   "icon": "notepad"
 }
-Response:
 
-json
+**Response:**
+
+```json
 {
   "errors": {
     "alias": "Alias must not be empty.",
@@ -118,20 +135,19 @@ json
     "icon": "Icon must start with 'icon-'."
   }
 }
-✅ Verification Checklist
- UmbracoCMS runs with SQLite and exposes /umbraco/swagger.
 
- UmbracoBridge runs and consumes Umbraco's management API.
+## ✅ Lista de Verificación
 
- Token is requested only if not cached or expired.
+- UmbracoCMS se ejecuta con SQLite y expone `/umbraco/swagger`.
+- UmbracoBridge consume el Management API de Umbraco.
+- El token se solicita solo si no está en caché o está expirado.
+- Validadores presentes para el payload del POST.
+- Swagger habilitado y funcional para ambas APIs.
 
- Validators in place for POST payloads.
+## 🛠️ appsettings.json para entorno de desarrollo
 
- Swagger is enabled and works for both APIs.
-
- for dev environment only, appsettings shoud look like this:
-
- {
+```json
+{
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -168,3 +184,4 @@ json
     "ClientSecret": "corrientes3482!!"
   }
 }
+
