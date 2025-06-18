@@ -48,7 +48,7 @@ Unit tests using `xUnit` and `Moq` cover:
 
 Run tests with:
 
-```bash
+
 dotnet test
 ⚙️ Setup Instructions
 Prerequisites:
@@ -61,23 +61,16 @@ Visual Studio 2022+ or Rider
 🔧 Local Setup
 Clone the repo:
 
-bash
-Copy
-Edit
-git clone https://github.com/your-username/morgana-trial.git
+ 
+git clone https://github.com/Viclop3z/morgana-trial.git
 cd morgana-trial
 Restore & build:
-
-bash
-Copy
-Edit
+ 
 dotnet restore
 dotnet build
 Run both apps:
 
-bash
-Copy
-Edit
+ 
 dotnet run --project UmbracoCMS
 dotnet run --project UmbracoBridge
 Access Swagger docs:
@@ -89,8 +82,6 @@ Bridge API: https://localhost:{PORT}/swagger/index.html
 📬 Example Requests
 ✅ POST /api/management/documenttype
 json
-Copy
-Edit
 {
   "alias": "customAlias",
   "name": "My Document",
@@ -105,15 +96,11 @@ Edit
 Response:
 
 json
-Copy
-Edit
 {
   "id": "6bfba926-609f-44b6-89ea-97fe4f89baf9"
 }
 ❌ Invalid POST Example
 json
-Copy
-Edit
 {
   "alias": "",
   "name": "",
@@ -123,8 +110,6 @@ Edit
 Response:
 
 json
-Copy
-Edit
 {
   "errors": {
     "alias": "Alias must not be empty.",
@@ -144,11 +129,42 @@ Edit
 
  Swagger is enabled and works for both APIs.
 
-📂 Notes on .gitignore
-Make sure the following are included (not ignored):
+ for dev environment only, appsettings shoud look like this:
 
-umbraco.db (SQLite)
-
-appsettings.json (with placeholders if needed)
-
-Any config files that affect bootstrapping (like Startup.cs, Program.cs, etc.)
+ {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "Namespace": {
+    "Name": "devv2"
+  },
+  "Services": {
+    "BaseUrl": "http://localhost:57488/umbraco/management/api/v1",
+    "Endpoints": [
+      {
+        "Name": "Token",
+        "Path": "security/back-office/token"
+      },
+      {
+        "Name": "HealthCheck",
+        "Path": "health-check-group"
+      },
+      {
+        "Name": "DocumentType",
+        "Path": "document-type"
+      },
+      {
+        "Name": "DeleteDocumentType",
+        "Path": "document-type/{0}"
+      }
+    ]
+  },
+  "SecuritySettings": {
+    "ClientId": "umbraco-back-office-morgana",
+    "ClientSecret": "corrientes3482!!"
+  }
+}
